@@ -181,6 +181,7 @@ Certain modules require API keys to work. Make sure to add any necessary API key
 If this tool has been helpful to you, please consider giving us a star on GitHub! Your support means a lot to us and helps others discover the project.
 ## 🛠  Update Algorithm and Fixed a bug From HackerTheme 
 > Lists
+  - argus.py
   - tls_security_config.py
   - tls_handshake.py
   - tls_cipher_suites.py
