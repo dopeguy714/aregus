@@ -14,7 +14,7 @@ console = Console()
 DEFAULT_TIMEOUT = 10
 
 def banner():
-    console.print(Fore.GREEN + """
+    console.print("""
     =============================================
             Argus - Advanced Cookie Analyzer
     =============================================
@@ -68,21 +68,21 @@ def display_cookies(cookies, url):
 
     issues = analyze_cookies(cookies, url)
     if issues:
-        console.print(Fore.YELLOW + "[!] Security Issues Detected:")
+        console.print("[!] Security Issues Detected:")
         for issue in issues:
-            console.print(Fore.YELLOW + f"    - {issue}")
+            console.print(f"    - {issue}")
     else:
-        console.print(Fore.GREEN + "[+] No security issues detected with cookies.")
+        console.print("[+] No security issues detected with cookies.")
 
 def process_url(url):
     url = clean_url(url)
-    console.print(Fore.WHITE + f"[*] Fetching cookies for: {url}")
+    console.print(f"[*] Fetching cookies for: {url}")
     cookies = get_cookies(url)
     if cookies:
         display_cookies(cookies, url)
     else:
-        console.print(Fore.RED + f"[!] No cookies found for {url}.")
-    console.print(Fore.WHITE + f"[*] Cookie analysis completed for {url}.\n")
+        console.print(f"[!] No cookies found for {url}.")
+    console.print(f"[*] Cookie analysis completed for {url}.\n")
 
 def main():
     banner()
@@ -103,5 +103,5 @@ if __name__ == "__main__":
     try:
         main()
     except KeyboardInterrupt:
-        console.print(Fore.RED + "\n[!] Process interrupted by user.")
+        console.print("\n[!] Process interrupted by user.")
         sys.exit(1)
