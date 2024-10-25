@@ -1,4 +1,14 @@
 ## Development Version By HackerTheme 
+## 🛠  Update Algorithm and Fixed a bug From HackerTheme 
+> Lists
+  - argus.py
+  - tls_security_config.py
+  - tls_handshake.py
+  - technology_stack.py
+  - tls_cipher_suites.py
+  - third_party_integrations.py
+  - privacy_gdpr.py
+  - open_ports.py
 > Credit By https://github.com/jasonxtn/Argus
 <h1 align="center">
   <a href="">
@@ -179,11 +189,4 @@ Certain modules require API keys to work. Make sure to add any necessary API key
 ## ⭐️ Show Your Support
 
 If this tool has been helpful to you, please consider giving us a star on GitHub! Your support means a lot to us and helps others discover the project.
-## 🛠  Update Algorithm and Fixed a bug From HackerTheme 
-> Lists
-  - argus.py
-  - tls_security_config.py
-  - tls_handshake.py
-  - technology_stack.py
-  - tls_cipher_suites.py
-  - third_party_integrations.py
+
