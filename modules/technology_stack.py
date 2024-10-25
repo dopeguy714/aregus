@@ -231,14 +231,14 @@ if __name__ == "__main__":
             target = sys.argv[1]
             main(target)
         else:
-            console.print(Fore.YELLOW + "[*] Please enter the target domain or URL.")
-            target = input(Fore.WHITE + "Target: ")
+            console.print("[*] Please enter the target domain or URL.", style="YELLOW")
+            target = input("Target: ")
             if target:
                 main(target)
             else:
-                console.print(Fore.RED + "[!] No target provided. Exiting.")
+                console.print("[!] No target provided. Exiting.", style="YELLOW")
                 sys.exit(1)
     except KeyboardInterrupt:
-        console.print(Fore.RED + "\n[!] Process interrupted by user.")
+        console.print("\n[!] Process interrupted by user.", style="RED")
         logging.warning("Process interrupted by user.")
         sys.exit(1)
