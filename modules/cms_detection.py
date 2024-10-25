@@ -112,8 +112,60 @@ CMS_SIGNATURES = {
         "meta_generator": "Contao",
         "html_comments": "contao",
         "path_indicators": ["/contao/"]
+    },
+    # New CMS signatures
+    "SilverStripe": {
+        "meta_generator": "SilverStripe",
+        "html_comments": "SilverStripe",
+        "path_indicators": ["/silverstripe/"]
+    },
+    "TYPO3 Neos": {
+        "meta_generator": "TYPO3 Neos",
+        "html_comments": "TYPO3 Neos",
+        "path_indicators": ["/neos/"]
+    },
+    "Webflow": {
+        "meta_generator": "Webflow",
+        "html_comments": "webflow",
+        "path_indicators": ["/webflow/"]
+    },
+    "Zen Cart": {
+        "meta_generator": "Zen Cart",
+        "html_comments": "Zen Cart",
+        "path_indicators": ["/includes/templates/"]
+    },
+    "Concrete5": {
+        "meta_generator": "Concrete5",
+        "html_comments": "Concrete5",
+        "path_indicators": ["/application/"]
+    },
+    "MODX Revolution": {
+        "meta_generator": "MODX Revolution",
+        "html_comments": "modx",
+        "path_indicators": ["/manager/assets/"]
+    },
+    "Bolt": {
+        "meta_generator": "Bolt",
+        "html_comments": "Bolt",
+        "path_indicators": ["/bolt/"]
+    },
+    "Grav": {
+        "meta_generator": "Grav",
+        "html_comments": "Grav",
+        "path_indicators": ["/user/themes/"]
+    },
+    "Pimcore": {
+        "meta_generator": "Pimcore",
+        "html_comments": "Pimcore",
+        "path_indicators": ["/pimcore/"]
+    },
+    "Hugo": {
+        "meta_generator": "Hugo",
+        "html_comments": "Hugo",
+        "path_indicators": ["/assets/"]
     }
 }
+
 
 def banner():
     console.print(Fore.WHITE + """
