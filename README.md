@@ -184,3 +184,4 @@ If this tool has been helpful to you, please consider giving us a star on GitHub
   - tls_security_config.py
   - tls_handshake.py
   - tls_cipher_suites.py
+  - third_party_integrations.py
