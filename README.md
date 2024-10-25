@@ -1,6 +1,6 @@
 ## Development Version By HackerTheme 
 ## 🛠  Update Algorithm and Fixed a bug From HackerTheme 
-> Lists
+> Lists modules
   - argus.py
   - tls_security_config.py
   - tls_handshake.py
@@ -19,6 +19,9 @@
   - cookies.py
   - cms_detection.py
   - performance_monitoring.py
+  - __init__.py
+> lists config
+  - settings.py
 > Credit By https://github.com/jasonxtn/Argus
 <h1 align="center">
   <a href="">
