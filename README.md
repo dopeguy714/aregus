@@ -19,7 +19,7 @@
   - cookies.py
   - cms_detection.py
   - performance_monitoring.py
-  - __init__.py
+  - <p>__init__.py</p>
 > Lists config
   - settings.py
 > Credit By https://github.com/jasonxtn/Argus
