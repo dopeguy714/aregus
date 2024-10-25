@@ -15,6 +15,7 @@
   - firewall_detection.py
   - dns_records.py
   - dark_web_monitoring.py
+  - crawler.py
 > Credit By https://github.com/jasonxtn/Argus
 <h1 align="center">
   <a href="">
