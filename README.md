@@ -13,6 +13,7 @@
   - malware_phishing.py
   - ip_info.py
   - firewall_detection.py
+  - dns_records.py
 > Credit By https://github.com/jasonxtn/Argus
 <h1 align="center">
   <a href="">
