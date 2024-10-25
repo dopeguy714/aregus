@@ -1,6 +1,7 @@
 import os
 import sys
 import requests
+import colorama
 from bs4 import BeautifulSoup
 from rich.console import Console
 from rich.table import Table
@@ -9,13 +10,16 @@ import re
 import argparse
 from urllib.parse import urljoin, urlparse
 
-init(autoreset=True)
+# Initialize colorama for auto-resetting colors
+colorama.init(autoreset=True)
 console = Console()
 
+# Paths for utility functions and config
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from utils.util import clean_url, log_message
 from config.settings import DEFAULT_TIMEOUT
 
+# Keyword lists for checks
 GDPR_KEYWORDS = [
     "gdpr", "general data protection regulation", "data controller",
     "data processor", "consent", "data subject", "data protection officer",
@@ -34,11 +38,11 @@ COOKIE_KEYWORDS = [
 ]
 
 def banner():
-    console.print(Fore.GREEN + """
+    console.print("""
     =============================================
           Argus - Privacy & GDPR Compliance
     =============================================
-    """)
+    """, style="GREEN")
 
 def parse_arguments():
     parser = argparse.ArgumentParser(
@@ -69,7 +73,7 @@ def find_policy_links(session, url):
         response = session.get(url, timeout=DEFAULT_TIMEOUT)
         response.raise_for_status()
     except requests.RequestException as e:
-        console.print(Fore.RED + f"[!] Error fetching the homepage: {e}")
+        console.print(f"[!] Error fetching the homepage: {e}")
         log_message("privacy_gdpr_compliance.log", f"Error fetching the homepage: {e}")
         return None, None, None
 
@@ -92,6 +96,7 @@ def find_policy_links(session, url):
         'cookie consent', 'manage cookies', 'cookie settings'
     ]
 
+    # Find links for policies
     for a_tag in soup.find_all('a', href=True):
         link_text = a_tag.get_text(strip=True).lower()
         if not privacy_link and any(text in link_text for text in privacy_texts):
@@ -103,12 +108,22 @@ def find_policy_links(session, url):
         if privacy_link and gdpr_link and cookie_link:
             break
 
+    # Fallback links if not found
+    base_url = url.rstrip('/')
     if not privacy_link:
-        privacy_link = urljoin(url, "/privacy-policy")
+        privacy_link = urljoin(base_url, "privacy-policy")
     if not gdpr_link:
-        gdpr_link = urljoin(url, "/gdpr-compliance")
+        gdpr_link = urljoin(base_url, "gdpr-compliance")
     if not cookie_link:
-        cookie_link = urljoin(url, "/cookie-policy")
+        cookie_link = urljoin(base_url, "cookie-policy")
+
+    # Optional: Print Fallback links used
+    if privacy_link and "privacy-policy" in privacy_link:
+        console.print(Fore.YELLOW + f"[!] Using fallback Privacy Policy link: {privacy_link}")
+    if gdpr_link and "gdpr-compliance" in gdpr_link:
+        console.print(Fore.YELLOW + f"[!] Using fallback GDPR Compliance link: {gdpr_link}")
+    if cookie_link and "cookie-policy" in cookie_link:
+        console.print(Fore.YELLOW + f"[!] Using fallback Cookie Policy link: {cookie_link}")
 
     return privacy_link, gdpr_link, cookie_link
 
@@ -150,7 +165,7 @@ def display_results(privacy_result, gdpr_result, cookie_result):
 
 def main(target_url, enable_logging):
     banner()
-    console.print(Fore.WHITE + f"[*] Checking Privacy Policy, GDPR Compliance, and Cookie Policy for: {target_url}")
+    console.print(f"[*] Checking Privacy Policy, GDPR Compliance, and Cookie Policy for: {target_url}", style="RED")
 
     session = requests.Session()
     session.headers.update({
@@ -161,9 +176,9 @@ def main(target_url, enable_logging):
 
     privacy_url, gdpr_url, cookie_url = find_policy_links(session, target_url)
 
-    console.print(Fore.WHITE + f"[*] Privacy Policy URL: {privacy_url}")
-    console.print(Fore.WHITE + f"[*] GDPR Compliance URL: {gdpr_url}")
-    console.print(Fore.WHITE + f"[*] Cookie Policy URL: {cookie_url}")
+    console.print(f"[*] Privacy Policy URL: {privacy_url}", style="WHITE")
+    console.print(f"[*] GDPR Compliance URL: {gdpr_url}" ,style="WHITE")
+    console.print(f"[*] Cookie Policy URL: {cookie_url}" ,style="WHITE")
 
     privacy_result = check_policy(session, privacy_url, "Privacy Policy", PRIVACY_KEYWORDS)
     gdpr_result = check_policy(session, gdpr_url, "GDPR Compliance", GDPR_KEYWORDS)
@@ -173,14 +188,14 @@ def main(target_url, enable_logging):
 
     if enable_logging:
         log_message("privacy_gdpr_compliance.log",
-                    f"Checked URL: {target_url}\n"
+                    f"Checked URL: {target_url}\n",
                     f"Privacy Policy: {privacy_result}\n"
                     f"GDPR Compliance: {gdpr_result}\n"
                     f"Cookie Policy: {cookie_result}\n")
 
-    console.print(Fore.WHITE + "[*] Privacy & GDPR compliance check completed.")
+    console.print("[*] Privacy & GDPR compliance check completed.")
 
 if __name__ == "__main__":
     args = parse_arguments()
-    target = validate_url(args.url)
-    main(target, args.log)
+    target_url = validate_url(args.url)
+    main(target_url, args.log)
