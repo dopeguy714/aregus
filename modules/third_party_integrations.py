@@ -4,10 +4,9 @@ import requests
 from bs4 import BeautifulSoup
 from rich.console import Console
 from rich.table import Table
-from colorama import Fore, init
 import logging
 
-required_modules = ['requests', 'bs4', 'rich', 'colorama']
+required_modules = ['requests', 'bs4', 'rich']
 missing_modules = []
 
 for module in required_modules:
@@ -17,11 +16,10 @@ for module in required_modules:
         missing_modules.append(module)
 
 if missing_modules:
-    print(Fore.RED + "[!] Missing required modules: " + ', '.join(missing_modules))
-    print(Fore.YELLOW + "Please install them using: pip install -r requirements.txt")
+    print(f"[bold red][!] Missing required modules: {', '.join(missing_modules)}")
+    print("[yellow]Please install them using: pip install -r requirements.txt")
     sys.exit(1)
 
-init(autoreset=True)
 console = Console()
 
 log_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'Logs')
@@ -32,11 +30,9 @@ log_file = os.path.join(log_dir, 'third_party_integrations.log')
 logging.basicConfig(filename=log_file, level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 def banner():
-    print(Fore.WHITE + """
-=============================================
-    Argus - Third-Party Integrations Check
-=============================================
-""")
+    console.print("[bold white]=============================================")
+    console.print("    Argus - Third-Party Integrations Check")
+    console.print("[bold white]=============================================")
 
 def detect_by_html_content(url):
     integrations = []
@@ -68,7 +64,7 @@ def detect_by_html_content(url):
             elif 'disqus' in src:
                 integrations.append({'Integration': 'Disqus', 'Details': 'Commenting System'})
     except requests.RequestException as e:
-        print(Fore.RED + f"[!] Error retrieving HTML content: {e}")
+        console.print(f"[bold red][!] Error retrieving HTML content: {e}")
         logging.error(f"Error retrieving HTML content: {e}")
     return integrations
 
@@ -91,7 +87,7 @@ def detect_by_headers(url):
             elif 'php' in powered_by:
                 integrations.append({'Integration': 'PHP', 'Details': 'Backend Language'})
     except requests.RequestException as e:
-        print(Fore.RED + f"[!] Error retrieving HTTP headers: {e}")
+        console.print(f"[bold red][!] Error retrieving HTTP headers: {e}")
         logging.error(f"Error retrieving HTTP headers: {e}")
     return integrations
 
@@ -114,8 +110,31 @@ def detect_by_meta_tags(url):
             elif script.string and 'fbq' in script.string:
                 integrations.append({'Integration': 'Facebook Pixel', 'Details': 'Advertising and Tracking'})
     except requests.RequestException as e:
-        print(Fore.RED + f"[!] Error retrieving meta tags: {e}")
+        console.print(f"[bold red][!] Error retrieving meta tags: {e}")
         logging.error(f"Error retrieving meta tags: {e}")
+    return integrations
+
+def detect_by_additional_sources(url):
+    integrations = []
+    try:
+        response = requests.get(url, timeout=10)
+        response.raise_for_status()
+        content = response.text.lower()
+        
+        # Check for more integrations based on content patterns
+        if 'segment' in content:
+            integrations.append({'Integration': 'Segment', 'Details': 'Customer Data Infrastructure'})
+        if 'mixpanel' in content:
+            integrations.append({'Integration': 'Mixpanel', 'Details': 'Product Analytics'})
+        if 'sendgrid' in content:
+            integrations.append({'Integration': 'SendGrid', 'Details': 'Email Delivery Service'})
+        if 'twilio' in content:
+            integrations.append({'Integration': 'Twilio', 'Details': 'Communication API'})
+        if 'shopify' in content:
+            integrations.append({'Integration': 'Shopify', 'Details': 'E-commerce Platform'})
+    except requests.RequestException as e:
+        console.print(f"[bold red][!] Error retrieving additional sources: {e}")
+        logging.error(f"Error retrieving additional sources: {e}")
     return integrations
 
 def display_third_party_integrations(integrations):
@@ -144,33 +163,35 @@ def save_results(integrations, target):
                 f.write(f"Integration: {integration['Integration']}\n")
                 f.write(f"Details: {integration['Details']}\n")
                 f.write('---\n')
-        print(Fore.GREEN + f"[+] Results saved to {filename}")
+        console.print(f"[bold green][+] Results saved to {filename}")
         logging.info(f"Results saved to {filename}")
     except Exception as e:
-        print(Fore.RED + f"[!] Error saving results: {e}")
+        console.print(f"[bold red][!] Error saving results: {e}")
         logging.error(f"Error saving results: {e}")
 
 def main(target):
     banner()
-    print(Fore.WHITE + f"[*] Detecting third-party integrations for: {target}")
+    console.print(f"[bold white][*] Detecting third-party integrations for: {target}")
     logging.info(f"Started third-party integrations detection for: {target}")
     if not target.startswith(('http://', 'https://')):
         target = 'http://' + target
     integrations = []
-    print(Fore.CYAN + "[*] Analyzing HTML content...")
+    console.print("[bold cyan][*] Analyzing HTML content...")
     integrations += detect_by_html_content(target)
-    print(Fore.CYAN + "[*] Analyzing HTTP headers...")
+    console.print("[bold cyan][*] Analyzing HTTP headers...")
     integrations += detect_by_headers(target)
-    print(Fore.CYAN + "[*] Analyzing meta tags and JavaScript references...")
+    console.print("[bold cyan][*] Analyzing meta tags and JavaScript references...")
     integrations += detect_by_meta_tags(target)
+    console.print("[bold cyan][*] Checking additional sources...")
+    integrations += detect_by_additional_sources(target)  # Added this line for additional checks
     if integrations:
-        print(Fore.GREEN + "[+] Third-party integrations detected:")
+        console.print("[bold green][+] Third-party integrations detected:")
         display_third_party_integrations(integrations)
         save_results(integrations, target)
     else:
-        console.print(Fore.RED + "[!] No third-party integrations found.")
+        console.print("[bold red][!] No third-party integrations found.")
         logging.info("No third-party integrations found.")
-    print(Fore.CYAN + "[*] Third-party integrations check completed.")
+    console.print("[bold cyan][*] Third-party integrations check completed.")
     logging.info("Third-party integrations check completed.")
 
 if __name__ == "__main__":
@@ -179,14 +200,14 @@ if __name__ == "__main__":
             target = sys.argv[1]
             main(target)
         else:
-            console.print(Fore.YELLOW + "[*] Please enter the target domain or URL.")
-            target = input(Fore.WHITE + "Target: ")
+            console.print("[*] Please enter the target domain or URL.")
+            target = input("Target: ")
             if target:
                 main(target)
             else:
-                console.print(Fore.RED + "[!] No target provided. Exiting.")
+                console.print("[!] No target provided. Exiting.")
                 sys.exit(1)
     except KeyboardInterrupt:
-        console.print(Fore.RED + "\n[!] Process interrupted by user.")
+        console.print("[!] Process interrupted by user.")
         logging.warning("Process interrupted by user.")
         sys.exit(1)
