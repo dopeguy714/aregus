@@ -18,6 +18,7 @@
   - crawler.py
   - cookies.py
   - cms_detection.py
+  - performance_monitoring.py
 > Credit By https://github.com/jasonxtn/Argus
 <h1 align="center">
   <a href="">
