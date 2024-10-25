@@ -3,6 +3,7 @@ import sys
 import time
 import subprocess
 import random
+import platform
 from collections import defaultdict
 from rich.console import Console
 from rich.table import Table
@@ -239,6 +240,15 @@ def run_modules(selected_modules, api_status, mode_name=None):
     Prompt.ask("\n[bold yellow]Press Enter to continue...[/bold yellow]")
     main()
 
+import subprocess
+import sys
+from rich.console import Console
+from rich.prompt import Prompt
+
+console = Console()
+def clear_screen():
+
+    os.system('cls' if platform.system() == 'Windows' else 'clear')
 def main():
     clear_screen()
     logo()
@@ -262,21 +272,29 @@ def main():
             elif choice.lower() in ['exit', 'quit']:
                 console.print("[bold green]Exiting Argus. Goodbye![/bold green]")
                 sys.exit(0)
+            elif choice == 'cls':
+                clear_screen()
             elif not choice: 
                 console.print("[bold yellow]Please select a module to use.[/bold yellow]")
                 display_table()  
             else:
+                
                 selected_modules = [mod.strip() for mod in choice.replace(',', ' ').split()]
                 if all(mod in tools_mapping for mod in selected_modules):
                     run_modules(selected_modules, check_api_modules())
                 else:
-                    console.print("[bold red]Invalid Input! Please choose valid options.[/bold red]")
-                    display_table()
+                   
+                    try:
+                        result = subprocess.run(choice, shell=True, check=True, capture_output=True, text=True)
+                        console.print(result.stdout)  
+                    except subprocess.CalledProcessError as e:
+                        console.print(f"[bold red]Error: {e.stderr}[/bold red]")  
+                    except Exception as e:
+                        console.print(f"[bold red]An unexpected error occurred: {str(e)}[/bold red]")
 
     except KeyboardInterrupt:
         console.print('\n[bold red]Script interrupted by user.[/bold red]')
         sys.exit()
-
 
 if __name__ == "__main__":
     main()
