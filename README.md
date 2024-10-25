@@ -9,6 +9,9 @@
   - third_party_integrations.py
   - privacy_gdpr.py
   - open_ports.py
+  - http_security.py
+  - malware_phishing.py
+  - ip_info.py
 > Credit By https://github.com/jasonxtn/Argus
 <h1 align="center">
   <a href="">
