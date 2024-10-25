@@ -184,5 +184,6 @@ If this tool has been helpful to you, please consider giving us a star on GitHub
   - argus.py
   - tls_security_config.py
   - tls_handshake.py
+  - technology_stack.py
   - tls_cipher_suites.py
   - third_party_integrations.py
