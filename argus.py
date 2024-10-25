@@ -26,7 +26,8 @@ if sys.version_info < (3, 0):
     sys.exit(1)
 
 VERSION = "1.1"
-AUTHOR = "Jason13"
+AUTHOR1 = "Jason13"
+AUTHOR2 = "HackerTheme"
 
 # Define tools with updated module numbers
 tools = [
@@ -114,7 +115,9 @@ def logo():
 ███████║██████╔╝██║  ███╗██║   ██║███████╗
 ██╔══██║██╔══██╗██║   ██║██║   ██║╚════██║
 ██║  ██║██║  ██║╚██████╔╝╚██████╔╝███████║
-╚═╝  ╚═╝╚═╝  ╚═╝ ╚═════╝  ╚═════╝ ╚══════╝                                       
+╚═╝  ╚═╝╚═╝  ╚═╝ ╚═════╝  ╚═════╝ ╚══════╝    
+
+Developed By: {AUTHOR1} {AUTHOR2}
     """
     lines = ascii_art.strip("\n").split("\n")
     colors = ["red", "green", "yellow", "blue", "magenta", "cyan", "white"]
@@ -127,7 +130,7 @@ def logo():
     description = f"""
 [bold cyan]The Ultimate Information Gathering Tool[/bold cyan]
 
-Version: [bold green]{VERSION}[/bold green]    Modules: [bold yellow]{number_of_modules}[/bold yellow]    Coded by: [bold magenta]{AUTHOR}[/bold magenta]
+Version: [bold green]{VERSION}[/bold green]    Modules: [bold yellow]{number_of_modules}[/bold yellow]    Coded by: [bold magenta]{AUTHOR1} {AUTHOR2}[/bold magenta]
     """.strip()
     combined_text = f"{colored_ascii_art}\n{description}"
     panel_color = random.choice(colors)
@@ -247,18 +250,21 @@ def main():
 
             if choice == '00':
                 beast_mode()
-            elif choice == '100':  # Run all infrastructure tools
+            elif choice == '100': 
                 selected_modules = [tool['number'] for tool in tools if tool['section'] == 'Network & Infrastructure']
                 run_modules(selected_modules, check_api_modules(), mode_name='All_Infrastructure_Tools')
-            elif choice == '200':  # Run all web intelligence tools
+            elif choice == '200':  
                 selected_modules = [tool['number'] for tool in tools if tool['section'] == 'Web Application Analysis']
                 run_modules(selected_modules, check_api_modules(), mode_name='All_Web_Intelligence_Tools')
-            elif choice == '300':  # Run all security tools
+            elif choice == '300':  
                 selected_modules = [tool['number'] for tool in tools if tool['section'] == 'Security & Threat Intelligence']
                 run_modules(selected_modules, check_api_modules(), mode_name='All_Security_Tools')
             elif choice.lower() in ['exit', 'quit']:
                 console.print("[bold green]Exiting Argus. Goodbye![/bold green]")
                 sys.exit(0)
+            elif not choice: 
+                console.print("[bold yellow]Please select a module to use.[/bold yellow]")
+                display_table()  
             else:
                 selected_modules = [mod.strip() for mod in choice.replace(',', ' ').split()]
                 if all(mod in tools_mapping for mod in selected_modules):
@@ -270,6 +276,7 @@ def main():
     except KeyboardInterrupt:
         console.print('\n[bold red]Script interrupted by user.[/bold red]')
         sys.exit()
+
 
 if __name__ == "__main__":
     main()
