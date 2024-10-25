@@ -20,7 +20,7 @@
   - cms_detection.py
   - performance_monitoring.py
   - __init__.py
-> lists config
+> Lists config
   - settings.py
 > Credit By https://github.com/jasonxtn/Argus
 <h1 align="center">
