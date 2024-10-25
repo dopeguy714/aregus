@@ -29,15 +29,15 @@ def get_dns_records(domain):
                 answers = dns.resolver.resolve(domain, record_type)
                 records[record_type] = [str(rdata) for rdata in answers]
             except dns.resolver.NoAnswer:
-                console.print(Fore.WHITE + f"[!] No {record_type} records found for {domain}.")
+                console.print(f"[!] No {record_type} records found for {domain}." , style="WHITE")
             except dns.resolver.NXDOMAIN:
-                console.print(Fore.RED + f"[!] Domain {domain} does not exist.")
+                console.print(f"[!] Domain {domain} does not exist.",style="BLUE")
                 return None
             except dns.exception.DNSException as e:
-                console.print(Fore.RED + f"[!] Error retrieving {record_type} records: {e}")
+                console.print(f"[!] Error retrieving {record_type} records: {e}",style="RED")
         return records
     except dns.exception.DNSException as e:
-        console.print(Fore.RED + f"[!] Error retrieving DNS records for {domain}: {e}")
+        console.print(f"[!] Error retrieving DNS records for {domain}: {e}",style="RED")
         return None
 
 def display_dns_records(records):
@@ -60,10 +60,10 @@ def main(target):
     domain = clean_domain_input(target)
 
     if not validate_domain(domain):
-        console.print(Fore.RED + "[!] Invalid domain format. Please check the domain and try again.")
+        console.print("[!] Invalid domain format. Please check the domain and try again.",style="RED")
         return
 
-    console.print(Fore.WHITE + f"[*] Fetching DNS records for: {domain}")
+    console.print(f"[*] Fetching DNS records for: {domain}",style="WHITE")
     dns_records = get_dns_records(domain)
 
     if dns_records:
@@ -71,7 +71,7 @@ def main(target):
     else:
         console.print(Fore.RED + "[!] No DNS records found.")
 
-    console.print(Fore.WHITE + "[*] DNS records retrieval completed.")
+    console.print("[*] DNS records retrieval completed.",style="WHITE")
 
 
 if __name__ == "__main__":
@@ -79,5 +79,5 @@ if __name__ == "__main__":
         target = sys.argv[1]
         main(target)
     else:
-        console.print(Fore.RED + "[!] No target provided. Please pass a domain.")
+        console.print("[!] No target provided. Please pass a domain.",style="RED")
         sys.exit(1)
