@@ -6,24 +6,28 @@ from urllib.parse import urlparse
 from rich.console import Console
 from rich.table import Table
 from rich import box
-from colorama import Fore, init
+from colorama import init
 import concurrent.futures
+from datetime import datetime
 
+# Initialize Colorama
 init(autoreset=True)
+
+# Create a console instance for Rich
 console = Console()
 
 DEFAULT_TIMEOUT = 5
 
 def banner():
-    console.print(Fore.GREEN + """
+    console.print("""
     =============================================
            Argus - TLS Security Configuration Analyzer
     =============================================
-    """)
+    """, style="bold green")
 
 def clean_domain_input(domain: str) -> str:
     domain = domain.strip()
-    if domain.startswith('http://') or domain.startswith('https://'):
+    if domain.startswith(('http://', 'https://')):
         parsed = urlparse(domain)
         return parsed.hostname
     else:
@@ -54,12 +58,12 @@ def get_tls_security_config(domain: str, ip: str = None, port: int = 443):
                     "supported_ciphers": supported_ciphers
                 })
     except Exception as e:
-        console.print(Fore.RED + f"[!] Error retrieving TLS security configuration for {domain}: {e}")
+        console.print(f"[!] Error retrieving TLS security configuration for {domain}: {e}", style="bold red")
         return None
 
     return results
 
-def get_supported_tls_versions(domain: str, ip: str, port: int):
+def get_supported_tls_versions(domain: str, ip: str, port: int = 443):
     tls_versions = {
         'TLSv1': ssl.TLSVersion.TLSv1,
         'TLSv1.1': ssl.TLSVersion.TLSv1_1,
@@ -67,6 +71,7 @@ def get_supported_tls_versions(domain: str, ip: str, port: int):
         'TLSv1.3': ssl.TLSVersion.TLSv1_3,
     }
     supported_versions = []
+
     for name, version in tls_versions.items():
         try:
             context = ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
@@ -130,7 +135,7 @@ def extract_cert_info(cert):
 
 def analyze_tls_security(config):
     issues = []
-
+    
     # Check for weak TLS versions
     weak_tls_versions = {'TLSv1', 'TLSv1.1'}
     supported_versions = set(config.get('supported_tls_versions', []))
@@ -145,20 +150,61 @@ def analyze_tls_security(config):
     if weak_ciphers:
         issues.append("Weak cipher suites supported: " + ", ".join(weak_ciphers))
 
-    # Check certificate expiration
+    # Check for weak key exchange methods
+    weak_key_exchange = []
+    for cipher in config.get('supported_ciphers', []):
+        if 'RSA' in cipher and 'ECDHE' not in cipher:
+            weak_key_exchange.append(cipher)
+    if weak_key_exchange:
+        issues.append("Weak key exchange methods used: " + ", ".join(weak_key_exchange))
+
+    # Check for weak elliptic curves
+    weak_curves = {'secp192r1', 'secp224r1', 'secp256k1'}
+    supported_curves = set(config.get('supported_curves', []))
+    if supported_curves & weak_curves:
+        issues.append("Weak elliptic curves supported: " + ", ".join(supported_curves & weak_curves))
+
+    # Check for PFS support
+    pfs_ciphers = [cipher for cipher in config.get('supported_ciphers', []) if 'ECDHE' in cipher or 'DHE' in cipher]
+    if not pfs_ciphers:
+        issues.append("No cipher suites with Perfect Forward Secrecy (PFS) are supported")
+
+    # Check for weak certificate signature algorithms
     cert_info = extract_cert_info(config.get('cert', {}))
+    if cert_info.get('Signature Algorithm', '').upper() in ['SHA1', 'MD5']:
+        issues.append("Weak certificate signature algorithm: " + cert_info['Signature Algorithm'])
+
+    # Check certificate expiration
     if cert_info.get('Valid To'):
-        from datetime import datetime
         valid_to = datetime.strptime(cert_info['Valid To'], '%b %d %H:%M:%S %Y %Z')
         days_left = (valid_to - datetime.utcnow()).days
         if days_left < 30:
             issues.append(f"Certificate expires in less than 30 days ({days_left} days left)")
 
+    # Check if TLS compression is enabled
+    if config.get('compression_enabled', False):
+        issues.append("TLS compression is enabled, which is vulnerable to CRIME attacks")
+
+    # Check for TLS downgrade prevention
+    if not config.get('tls_fallback_scsv', False):
+        issues.append("TLS_FALLBACK_SCSV not supported, vulnerable to downgrade attacks")
+
+    # Check for session resumption support
+    if not config.get('session_tickets_enabled', False):
+        issues.append("Session tickets are not enabled, reducing session resumption performance")
+
+    # Check for minimum RSA key size
+    key_size = cert_info.get('Key Size')
+    if key_size is None:
+        issues.append("Key size information is missing from the certificate")
+    elif key_size < 2048:
+        issues.append(f"RSA key size is too small: {key_size} bits")
+
     return issues
 
 def display_tls_security_config(domain: str, ip: str, configs):
     if not configs:
-        console.print(Fore.RED + f"[!] Unable to retrieve TLS security configuration for {domain}.")
+        console.print(f"[!] Unable to retrieve TLS security configuration for {domain}.", style="bold red")
         return
 
     for config in configs:
@@ -190,11 +236,11 @@ def display_tls_security_config(domain: str, ip: str, configs):
         # Analyze and display security issues
         issues = analyze_tls_security(config)
         if issues:
-            console.print(Fore.YELLOW + "[!] Security Issues Found:")
+            console.print("[!] Security Issues Found:", style="bold yellow")
             for issue in issues:
-                console.print(Fore.YELLOW + f"    - {issue}")
+                console.print(f"    - {issue}", style="bold yellow")
         else:
-            console.print(Fore.GREEN + "[+] No security issues detected.")
+            console.print("[+] No security issues detected.", style="bold green")
 
 def main():
     parser = argparse.ArgumentParser(description='Argus - TLS Security Configuration Analyzer')
@@ -203,7 +249,6 @@ def main():
     parser.add_argument('--threads', type=int, default=10, help='Number of concurrent threads (default: 10)')
 
     args = parser.parse_args()
-
     banner()
 
     targets = []
@@ -227,11 +272,11 @@ def main():
             configs = future.result()
             display_tls_security_config(domain, ip, configs)
 
-    console.print(Fore.CYAN + "[*] TLS security configuration analysis completed.")
+    console.print("[*] TLS security configuration analysis completed.", style="bold cyan")
 
 if __name__ == "__main__":
     try:
         main()
     except KeyboardInterrupt:
-        console.print(Fore.RED + "\n[!] Process interrupted by user.")
+        console.print("\n[!] Process interrupted by user.", style="bold red")
         sys.exit(1)
