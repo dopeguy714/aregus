@@ -4,10 +4,12 @@ import requests
 from rich.console import Console
 from rich.table import Table
 from colorama import init
-
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from utils.util import clean_url
-from config.settings import DEFAULT_TIMEOUT, GOOGLE_API_KEY  
+try:
+    import config.settings
+except ImportError as e:
+    print(f"ImportError: {e}")
 
 init(autoreset=True)
 console = Console()
