@@ -10,6 +10,8 @@ import re
 import os
 import argparse
 import time
+import random
+import urllib.robotparser
 
 console = Console()
 
@@ -32,8 +34,34 @@ class Crawler:
         self.task = self.progress.add_task("Crawling...", total=None)
         self.results = []
         self.output_file = self.generate_output_filename(base_url)
-        self.headers = {'User-Agent': 'ArgusCrawler/1.0'}
+        self.headers = {'User-Agent': self.generate_user_agent()}
         self.rate_limit = 0.5  # seconds between requests to avoid overloading server
+        self.domain_rate_limit = {}  # To track request timestamps per domain
+        self.robots_parser = urllib.robotparser.RobotFileParser()
+        self.robots_parser.set_url(urljoin(self.base_url, '/robots.txt'))
+        self.robots_parser.read()
+
+    def generate_user_agent(self):
+        
+        browsers = [
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Gecko/20100101 Firefox/89.0",
+    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.1.1 Safari/605.1.15",
+    "Mozilla/5.0 (Linux; Android 11; Pixel 5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.114 Mobile Safari/537.36",
+    "Mozilla/5.0 (Linux; Android 10; SM-G970F) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.114 Mobile Safari/537.36",
+    "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.107 Safari/537.36",
+    "Mozilla/5.0 (Windows NT 7.0; WOW64; Trident/7.0; AS; rv:11.0) like Gecko",
+    "Mozilla/5.0 (Linux; Android 9; SM-A750F) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Mobile Safari/537.36",
+    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/12.1.2 Safari/605.1.15",
+    "Mozilla/5.0 (Linux; Android 4.4.4; Nexus 5 Build/KRT16M) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Mobile Safari/537.36",
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.150 Safari/537.36",
+    "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:80.0) Gecko/20100101 Firefox/80.0",
+    "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:74.0) Gecko/20100101 Firefox/74.0",
+    "Mozilla/5.0 (iPhone; CPU iPhone OS 14_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0 Mobile/15E148 Safari/604.1",
+    "Mozilla/5.0 (iPad; CPU OS 14_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0 Mobile/15E148 Safari/604.1"
+]
+
+        return random.choice(browsers)
 
     def sanitize_url(self, url):
         url = url.strip()
@@ -80,11 +108,25 @@ class Crawler:
                 if url in self.visited or depth > self.max_depth:
                     self.queue.task_done()
                     continue
+                if not self.robots_parser.can_fetch(self.headers['User-Agent'], url):
+                    console.print(f"[yellow][!] Skipping {url} due to robots.txt restrictions[/yellow]")
+                    self.queue.task_done()
+                    continue
                 self.visited.add(url)
             self.progress.update(self.task, description=f"Crawling: {url}")
             try:
-                time.sleep(self.rate_limit)
+                domain = urlparse(url).netloc
+                if domain not in self.domain_rate_limit:
+                    self.domain_rate_limit[domain] = time.time()
+
+                # Implement rate limiting based on domain
+                time_since_last_request = time.time() - self.domain_rate_limit[domain]
+                if time_since_last_request < self.rate_limit:
+                    time.sleep(self.rate_limit - time_since_last_request)
+
                 response = requests.get(url, timeout=self.timeout, headers=self.headers)
+                self.domain_rate_limit[domain] = time.time()  # Update the timestamp for the domain
+                
                 status_code = response.status_code
                 content_type = response.headers.get('Content-Type', '')
                 console.print(f"[cyan][+][/] Found: {url} [green](Status: {status_code})[/] [yellow](Content-Type: {content_type})[/]")
