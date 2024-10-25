@@ -31,6 +31,7 @@ def detect_firewall(url):
         status_code = response.status_code
         response_body = response.text
 
+        # Firewall detection based on headers
         if 'Server' in headers and 'cloudflare' in headers['Server'].lower():
             detection_results.add("Cloudflare Firewall Detected")
         elif 'X-Akamai' in headers:
@@ -58,6 +59,7 @@ def detect_firewall(url):
         elif status_code == 403:
             detection_results.add("Possible WAF Detected - Received 403 Forbidden")
         
+        # Additional checks for rate limiting and CAPTCHA
         if response.elapsed.total_seconds() > 5:
             detection_results.add("Possible Rate Limiting Detected - WAF Protection")
 
@@ -97,10 +99,20 @@ def detect_firewall(url):
         if 'challenge' in altered_response.text.lower():
             detection_results.add("Possible Challenge Detected with Altered Headers")
 
+        # New Firewall Checks - Adding more detection criteria
+        if 'X-Frame-Options' in headers and headers['X-Frame-Options'] == 'DENY':
+            detection_results.add("X-Frame-Options Deny - Possible Protection Layer")
+        
+        if 'Content-Security-Policy' in headers:
+            detection_results.add("Content Security Policy Detected - Possible Firewall")
+
         time.sleep(1)
 
         return ", ".join(detection_results) if detection_results else "No Recognized Firewall Detected"
 
+    except requests.Timeout:
+        console.print(Fore.YELLOW + "[!] Request timed out.")
+        return None
     except requests.RequestException as e:
         console.print(Fore.RED + f"[!] Error retrieving firewall information: {e}")
         return None
