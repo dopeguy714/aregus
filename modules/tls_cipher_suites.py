@@ -5,20 +5,20 @@ from urllib.parse import urlparse
 from rich.console import Console
 from rich.table import Table
 from rich import box
-from colorama import Fore, init
+from rich.text import Text
 import concurrent.futures
 
-init(autoreset=True)
+# Initialize the console for rich
 console = Console()
 
 DEFAULT_TIMEOUT = 5
 
 def banner():
-    console.print(Fore.GREEN + """
+    console.print(Text("""
     =============================================
           Argus - Advanced TLS Cipher Analysis
     =============================================
-    """)
+    """, style="green"))
 
 def clean_domain_input(domain: str) -> str:
     domain = domain.strip()
@@ -122,7 +122,7 @@ def display_supported_ciphers(domain: str, supported_ciphers: list):
 
     weak_ciphers = analyze_ciphers(supported_ciphers)
     if weak_ciphers:
-        console.print(Fore.YELLOW + "[*] Weak or insecure cipher suites detected:")
+        console.print(Text("[*] Weak or insecure cipher suites detected:", style="yellow"))
         weak_table = Table(
             title="Weak Cipher Suites",
             show_header=True,
@@ -135,22 +135,24 @@ def display_supported_ciphers(domain: str, supported_ciphers: list):
             weak_table.add_row(cipher, protocol)
         console.print(weak_table)
     else:
-        console.print(Fore.GREEN + "[+] No weak cipher suites detected.")
+        console.print(Text("[+] No weak cipher suites detected.", style="green"))
 
 def main(targets):
     banner()
     for target in targets:
         domain = clean_domain_input(target)
         if not domain:
-            console.print(Fore.RED + f"[!] Invalid domain provided: {target}")
+            console.print(Text(f"[!] Invalid domain provided: {target}", style="red"))
             continue
-        console.print(Fore.WHITE + f"[*] Fetching TLS cipher suites for: {domain}")
+        console.print(Text(f"[*] Fetching TLS cipher suites for: {domain}", style="white"))
         supported_ciphers = get_supported_ciphers(domain)
         if supported_ciphers:
             display_supported_ciphers(domain, supported_ciphers)
         else:
-            console.print(Fore.RED + f"[!] No TLS cipher suites found or unable to connect to {domain}.")
-    console.print(Fore.CYAN + "[*] TLS cipher suites analysis completed.")
+            console.print(Text(f"[!] No TLS cipher suites found or unable to connect to {domain}.", style="red"))
+    
+    # Use rich to print the completion message
+    console.print(Text("[*] TLS cipher suites analysis completed.", style="cyan"))
 
 if __name__ == "__main__":
     try:
@@ -158,8 +160,8 @@ if __name__ == "__main__":
             targets = sys.argv[1:]
             main(targets)
         else:
-            console.print(Fore.RED + "[!] No domain provided. Please pass one or more domains.")
+            console.print(Text("[!] No domain provided. Please pass one or more domains.", style="red"))
             sys.exit(1)
     except KeyboardInterrupt:
-        console.print(Fore.RED + "\n[!] Process interrupted by user.")
+        console.print(Text("[!] Process interrupted by user.", style="red"))
         sys.exit(1)
