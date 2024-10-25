@@ -1,24 +1,23 @@
-import sys,os
+import sys
+import os
 import requests
 from bs4 import BeautifulSoup
 from rich.console import Console
 from rich.table import Table
-from colorama import Fore, init
 import json
 import re
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from utils.util import clean_domain_input, clean_url, ensure_url_format
 
-init(autoreset=True)
 console = Console()
 
 def banner():
-    console.print(Fore.GREEN + """
+    console.print("""
     =============================================
            Argus - Advanced HTTP Security Headers Check
     =============================================
-    """)
+    """, style="bold red")
 
 def get_headers(url):
     try:
@@ -26,7 +25,7 @@ def get_headers(url):
         response.raise_for_status()
         return response.headers, response.text
     except requests.RequestException as e:
-        console.print(Fore.RED + f"[!] Error retrieving headers: {e}")
+        console.print(f"[!] Error retrieving headers: {e}", style="bold red")
         return None, None
 
 def display_headers(headers):
@@ -58,9 +57,9 @@ def analyze_security_headers(headers):
     console.print(table)
     missing = [header for header, status in security_headers.items() if status == "Not Set"]
     if missing:
-        console.print(Fore.YELLOW + f"[!] Missing Security Headers: {', '.join(missing)}")
+        console.print(f"[!] Missing Security Headers: {', '.join(missing)}", style="bold yellow")
     else:
-        console.print(Fore.GREEN + "[+] All critical security headers are properly configured.")
+        console.print("[+] All critical security headers are properly configured.", style="bold blue")
 
 def identify_server_technology(headers):
     server = headers.get("Server", "Unknown")
@@ -73,7 +72,7 @@ def identify_server_technology(headers):
         technology = "Microsoft IIS"
     elif "cloudflare" in server.lower():
         technology = "Cloudflare CDN"
-    console.print(Fore.YELLOW + "[*] Detecting server technology...")
+    console.print("[*] Detecting server technology...", style="yellow")
     table = Table(show_header=True, header_style="bold magenta")
     table.add_column("Server", style="cyan", justify="left")
     table.add_column("Detected Technology", style="green")
@@ -100,14 +99,14 @@ def scan_vulnerabilities(headers):
     if vulnerabilities:
         console.print(table)
     else:
-        console.print(Fore.GREEN + "[+] No vulnerabilities detected based on HTTP headers.")
+        console.print("[+] No vulnerabilities detected based on HTTP headers.", style="bold green")
 
 def analyze_cookies(headers):
     cookies = headers.get("Set-Cookie")
     if not cookies:
-        console.print(Fore.YELLOW + "[!] No cookies found.")
+        console.print("[!] No cookies found.", style="yellow")
         return
-    console.print(Fore.YELLOW + "[*] Analyzing cookies for security flags...")
+    console.print("[*] Analyzing cookies for security flags...", style="yellow")
     table = Table(show_header=True, header_style="bold magenta")
     table.add_column("Cookie", style="cyan", justify="left")
     table.add_column("Attributes", style="green")
@@ -142,39 +141,86 @@ def detect_frameworks(response_text):
         if signature in response_text:
             detected.append(framework)
     if detected:
-        console.print(Fore.GREEN + f"[+] Detected Frameworks: {', '.join(detected)}")
+        console.print(f"[+] Detected Frameworks: {', '.join(detected)}", style="bold green")
     else:
-        console.print(Fore.YELLOW + "[!] No common frameworks detected.")
+        console.print("[!] No common frameworks detected.", style="yellow")
+
+def check_redirects(url):
+    """Check if there are any redirects for the provided URL"""
+    try:
+        response = requests.get(url, allow_redirects=True, timeout=10)
+        if response.history:
+            console.print(f"[!] Redirects detected for {url}", style="yellow")
+            for resp in response.history:
+                console.print(f"[*] Redirected to {resp.url} with status code {resp.status_code}", style="cyan")
+            console.print(f"[+] Final destination: {response.url}", style="green")
+        else:
+            console.print(f"[+] No redirects for {url}", style="green")
+    except requests.RequestException as e:
+        console.print(f"[!] Error checking redirects: {e}", style="bold red")
+
+def analyze_status_code(headers):
+    """Analyze HTTP status code to check for issues"""
+    status_code = headers.get("Status-Code")
+    if status_code:
+        if 400 <= status_code < 500:
+            console.print(f"[!] Client error detected with status code {status_code}", style="bold yellow")
+        elif 500 <= status_code < 600:
+            console.print(f"[!] Server error detected with status code {status_code}", style="bold red")
+        else:
+            console.print(f"[+] Status code {status_code} indicates no error", style="green")
+    else:
+        console.print("[!] Status code not found in headers", style="bold yellow")
+
+def check_x_powered_by(headers):
+    """Check for the presence of the X-Powered-By header, which might reveal the backend technology"""
+    x_powered_by = headers.get("X-Powered-By", "Not Set")
+    if x_powered_by != "Not Set":
+        console.print(f"[!] X-Powered-By header found: {x_powered_by}", style="bold yellow")
+    else:
+        console.print("[+] X-Powered-By header not set, which is recommended for security.", style="green")
+
+def check_cors_policy(headers):
+    """Analyze the CORS policy header"""
+    cors_policy = headers.get("Access-Control-Allow-Origin", "Not Set")
+    if cors_policy == "*":
+        console.print("[!] CORS policy allows access from all origins. This might be risky.", style="bold red")
+    elif cors_policy == "Not Set":
+        console.print("[!] No CORS policy set.", style="bold yellow")
+    else:
+        console.print(f"[+] CORS policy restricts access to: {cors_policy}", style="green")
 
 def main(target):
     banner()
     target = clean_url(clean_domain_input(target))
-    console.print(Fore.WHITE + f"[*] Fetching HTTP headers for: {target}")
+    console.print(f"[*] Fetching HTTP headers for: {target}", style="white")
     headers, response_text = get_headers(target)
+    
+    # New functionality added here
+    check_redirects(target)  # Check redirects
+    analyze_status_code(headers)  # Check status code
+    check_x_powered_by(headers)  # Check X-Powered-By header
+    check_cors_policy(headers)  # Check CORS policy
+
+    # Existing functionality follows
     if headers:
-        console.print(Fore.YELLOW + "[*] Displaying HTTP headers...")
+        console.print("[*] Displaying HTTP headers...", style="yellow")
         display_headers(headers)
-        console.print(Fore.YELLOW + "[*] Analyzing security headers...")
+        console.print("[*] Analyzing security headers...", style="yellow")
         analyze_security_headers(headers)
         identify_server_technology(headers)
-        console.print(Fore.YELLOW + "[*] Scanning for vulnerabilities based on headers...")
+        console.print("[*] Scanning for vulnerabilities based on headers...", style="yellow")
         scan_vulnerabilities(headers)
-        console.print(Fore.YELLOW + "[*] Analyzing cookies for security flags...")
+        console.print("[*] Analyzing cookies for security flags...", style="yellow")
         analyze_cookies(headers)
-        console.print(Fore.YELLOW + "[*] Detecting frameworks based on response content...")
+        console.print("[*] Detecting frameworks based on response content...", style="yellow")
         detect_frameworks(response_text)
     else:
-        console.print(Fore.RED + "[!] No headers found.")
-    console.print(Fore.WHITE + "[*] HTTP header analysis completed.")
+        console.print("[!] No headers found.", style="bold red")
+    console.print("[*] HTTP header analysis completed.", style="white")
 
 if __name__ == "__main__":
-    if len(sys.argv) > 1:
-        try:
-            target = sys.argv[1]
-            main(target)
-        except KeyboardInterrupt:
-            console.print(Fore.RED + "\n[!] Process interrupted by user.")
-            sys.exit(1)
+    if len(sys.argv) < 2:
+        console.print("[!] Please provide a target URL.", style="bold red")
     else:
-        console.print(Fore.RED + "[!] No target provided. Please pass a domain or URL.")
-        sys.exit(1)
+        main(ensure_url_format(sys.argv[1]))
