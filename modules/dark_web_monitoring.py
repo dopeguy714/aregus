@@ -20,6 +20,7 @@ def monitor_scylla(query):
         url = f"https://scylla.sh/search?q=email:*@{query}&size=100"
         headers = {'User-Agent': 'Mozilla/5.0'}
         response = requests.get(url, headers=headers, timeout=30)
+        response.raise_for_status()  # Raise an error for bad responses
         results = response.json()
         return results
     except requests.RequestException as e:
@@ -32,8 +33,16 @@ def monitor_pastebin(query):
         url = f"https://psbdmp.ws/api/v3/search/{query}"
         response = requests.get(url, timeout=30)
         data = response.json()
-        results = data.get('data', [])
-        return results
+
+        # Debug: Print the raw response data
+        print(Fore.YELLOW + f"[*] Raw Pastebin response: {data}")
+
+        # Check if response is a list
+        if isinstance(data, list):
+            return data  # Directly return the list if that's the case
+        else:
+            results = data.get('data', [])
+            return results
     except requests.RequestException as e:
         print(Fore.RED + f"[!] Error querying Pastebin dumps: {e}")
         return []
@@ -67,9 +76,10 @@ def display_pastebin_results(results):
     table.add_column("Date", style="white")
 
     for result in results:
-        paste_id = result.get("id", "N/A")
-        title = result.get("title", "N/A")
-        date = result.get("date", "N/A")
+        # Adjust based on the structure of each result in the list
+        paste_id = result.get("id", "N/A")  # Adjust if necessary
+        title = result.get("title", "N/A")  # Adjust if necessary
+        date = result.get("date", "N/A")    # Adjust if necessary
         table.add_row(paste_id, title, date)
 
     console.print(table)
