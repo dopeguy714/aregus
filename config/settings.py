@@ -7,7 +7,7 @@ RESULTS_DIR = "results"
 DEFAULT_TIMEOUT = 10
 # config/settings.py
 
-USER_AGENT = 'Mozilla/5.0 (compatible; ArgusBot/1.0; +https://yourdomain.com/bot)'
+USER_AGENT = 'Mozilla/5.0 (compatible; ArgusBot/1.0; )'
 
 # API Keys for third-party services (add your own keys)
 API_KEYS = {
