@@ -16,6 +16,7 @@
   - dns_records.py
   - dark_web_monitoring.py
   - crawler.py
+  - cookies.py
 > Credit By https://github.com/jasonxtn/Argus
 <h1 align="center">
   <a href="">
