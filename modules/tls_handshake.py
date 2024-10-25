@@ -7,6 +7,8 @@ from rich.table import Table
 from rich import box
 from colorama import Fore, init
 import concurrent.futures
+import json
+import os
 
 init(autoreset=True)
 console = Console()
@@ -38,12 +40,10 @@ def simulate_tls_handshake(domain: str, ip: str = None, port: int = 443, tls_ver
     for tls_version in tls_versions:
         try:
             context = ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
-            # Removed deprecated options settings
-            # context.options |= ssl.OP_NO_TLSv1 | ssl.OP_NO_TLSv1_1
             context.minimum_version = tls_version
             context.maximum_version = tls_version
-            context.check_hostname = False  # Disable hostname checking
-            context.verify_mode = ssl.CERT_NONE  # Disable certificate verification
+            context.check_hostname = False
+            context.verify_mode = ssl.CERT_NONE  # Disable certificate verification for testing
 
             if ciphers:
                 context.set_ciphers(ciphers)
@@ -110,6 +110,12 @@ def display_handshake_response(domain: str, ip: str, responses):
         table.add_row("Subject Alternative Names:", ', '.join(f"{typ}:{val}" for typ, val in cert_info.get("SAN", [])))
         console.print(table)
 
+def save_results_to_file(domain: str, responses):
+    filename = f"{domain}_tls_handshake_results.json"
+    with open(filename, 'w') as f:
+        json.dump(responses, f, indent=4)
+    console.print(Fore.CYAN + f"[*] Results saved to {filename}")
+
 def parse_tls_versions(tls_versions_str):
     version_map = {
         'TLSv1': ssl.TLSVersion.TLSv1,
@@ -135,6 +141,7 @@ def main():
     parser.add_argument('--threads', type=int, default=10, help='Number of concurrent threads (default: 10)')
     parser.add_argument('--tls', type=str, help='Comma-separated TLS versions to test (e.g., TLSv1.2,TLSv1.3)')
     parser.add_argument('--ciphers', type=str, help='Custom cipher suites to use (OpenSSL format)')
+    parser.add_argument('--output', type=str, help='Output file to save results (JSON format)')
 
     args = parser.parse_args()
 
@@ -156,6 +163,8 @@ def main():
             ip = None
         targets.append((domain, ip))
 
+    all_responses = {}
+
     with concurrent.futures.ThreadPoolExecutor(max_workers=args.threads) as executor:
         future_to_target = {
             executor.submit(simulate_tls_handshake, domain, ip, args.port, tls_versions, args.ciphers): (domain, ip)
@@ -165,6 +174,10 @@ def main():
             domain, ip = future_to_target[future]
             responses = future.result()
             display_handshake_response(domain, ip, responses)
+            all_responses[domain] = responses
+
+    if args.output:
+        save_results_to_file(args.output, all_responses)
 
     console.print(Fore.CYAN + "[*] TLS handshake simulation completed.")
 
