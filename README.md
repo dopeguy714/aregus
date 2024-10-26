@@ -22,7 +22,7 @@
   - <p>__init__.py</p>
 > Lists config
   - settings.py
-> Credit By https://github.com/jasonxtn/Argus
+> Credit By https://github.com/ThemeHackers/Argus
 <h1 align="center">
   <a href="">
     <picture>
