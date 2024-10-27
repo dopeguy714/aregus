@@ -79,15 +79,17 @@ Take a look at Argus in action:
 To get started with Argus, follow these simple steps:
 
 ```bash
-git clone https://github.com/jasonxtn/argus.git
+git clone https://github.com/ThemeHackers/argus.git
 cd argus
-pip install -r requirements.txt
+python3 -m venv .venv
+source .venv/bin/activate
+pip3 install -r requirements.txt
 ```
 
 Once installed, you can launch Argus with:
 
 ```bash
-python argus.py
+python3 argus.py
 ```
 
 ---
