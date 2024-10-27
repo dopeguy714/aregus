@@ -158,7 +158,7 @@ def display_table():
         table.add_row(*row)
     table.add_row("", "", "")
     table.add_row("", "", "")
-    table.add_row("[bold]x[/bold]. Run All Infrastructure Tools", "[bold]y[/bold]. Run All Web Intelligence Tools", "[bold]z[/bold]. Run All Security Tools")
+    table.add_row("[bold][X][/bold]. Run All Infrastructure Tools", "[bold][Y][/bold]. Run All Web Intelligence Tools", "[bold][Z][/bold]. Run All Security Tools")
     table.add_row("", "", "")
     table.add_row("", "[bold red]" + "-" * 15 + " 00. BEAST MODE " + "-" * 15 + "[/bold red]", "")
     console.print(table)
@@ -260,13 +260,13 @@ def main():
 
             if choice == '00':
                 beast_mode()
-            elif choice == 'x': 
+            elif choice.lower() == 'x': 
                 selected_modules = [tool['number'] for tool in tools if tool['section'] == 'Network & Infrastructure']
                 run_modules(selected_modules, check_api_modules(), mode_name='All_Infrastructure_Tools')
-            elif choice == 'y':  
+            elif choice.lower() == 'y':  
                 selected_modules = [tool['number'] for tool in tools if tool['section'] == 'Web Application Analysis']
                 run_modules(selected_modules, check_api_modules(), mode_name='All_Web_Intelligence_Tools')
-            elif choice == 'z':  
+            elif choice.lower() == 'z':  
                 selected_modules = [tool['number'] for tool in tools if tool['section'] == 'Security & Threat Intelligence']
                 run_modules(selected_modules, check_api_modules(), mode_name='All_Security_Tools')
             elif choice.lower() in ['exit', 'quit']:
