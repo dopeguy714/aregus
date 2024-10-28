@@ -10,3 +10,4 @@ whois
 pyOpenSSL
 python-nmap
 aioquic
+blessings

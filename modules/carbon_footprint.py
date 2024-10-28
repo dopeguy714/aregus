@@ -1,3 +1,6 @@
+# GNU GENERAL PUBLIC LICENSE 
+# Version 3, 29 June 2007
+# Copyright © 2007 Free Software Foundation, Inc. <http://fsf.org/>
 import sys
 import requests
 from rich.console import Console

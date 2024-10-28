@@ -26,7 +26,7 @@ if sys.version_info < (3, 0):
     print("This script requires Python 3.")
     sys.exit(1)
 
-VERSION = "1.2"
+VERSION = "0.1.1"
 AUTHOR1 = "Jason13"
 AUTHOR2 = "HackerTheme"
 
@@ -52,9 +52,10 @@ tools = [
     {'number': '17', 'name': 'TXT Records', 'script': 'txt_records.py', 'section': 'Network & Infrastructure'},
     {'number': '18', 'name': 'WHOIS Lookup', 'script': 'whois_lookup.py', 'section': 'Network & Infrastructure'},
     {'number': '19', 'name': 'Zone Transfer', 'script': 'zonetransfer.py', 'section': 'Network & Infrastructure'},
-
+    {'number': '20', 'name': 'Network Design Checker', 'script': 'network_design_checker.py', 'section': 'Network & Infrastructure'},
+    
     # Web Application Analysis (20-36)
-    {'number': '20', 'name': 'Archive History', 'script': 'archive_history.py', 'section': 'Web Application Analysis'},
+    {'number': '21', 'name': 'Archive History', 'script': 'archive_history.py', 'section': 'Web Application Analysis'},
     {'number': '21', 'name': 'Broken Links Detection', 'script': 'broken_links.py', 'section': 'Web Application Analysis'},
     {'number': '22', 'name': 'Carbon Footprint', 'script': 'carbon_footprint.py', 'section': 'Web Application Analysis'},
     {'number': '23', 'name': 'CMS Detection', 'script': 'cms_detection.py', 'section': 'Web Application Analysis'},
@@ -71,26 +72,28 @@ tools = [
     {'number': '34', 'name': 'Social Media Presence Scan', 'script': 'social_media.py', 'section': 'Web Application Analysis'},
     {'number': '35', 'name': 'Technology Stack Detection', 'script': 'technology_stack.py', 'section': 'Web Application Analysis'},
     {'number': '36', 'name': 'Third-Party Integrations', 'script': 'third_party_integrations.py', 'section': 'Web Application Analysis'},
-
+    {'number': '37', 'name': 'WAF Detection NIST', 'script': 'waf_detection_nist.py', 'section': 'Web Application Analysis'},
+    {'number': '38', 'name': 'Server Misconfiguration Checker', 'script': 'server_misconfiguration.py', 'section': 'Web Application Analysis'},
+    {'number': '39', 'name': 'Backup File Scanner', 'script': 'backup_file_scanner.py', 'section': 'Web Application Analysis'},
     # Security & Threat Intelligence (37-54)
-    {'number': '37', 'name': 'Censys Reconnaissance', 'script': 'censys.py', 'section': 'Security & Threat Intelligence'},
-    {'number': '38', 'name': 'Certificate Authority Recon', 'script': 'certificate_authority_recon.py', 'section': 'Security & Threat Intelligence'},
-    {'number': '39', 'name': 'Data Leak Detection', 'script': 'data_leak.py', 'section': 'Security & Threat Intelligence'},
-    {'number': '40', 'name': 'Exposed Environment Files Checker', 'script': 'exposed_env_files.py', 'section': 'Security & Threat Intelligence'},
-    {'number': '41', 'name': 'Firewall Detection', 'script': 'firewall_detection.py', 'section': 'Security & Threat Intelligence'},
-    {'number': '42', 'name': 'Global Ranking', 'script': 'global_ranking.py', 'section': 'Security & Threat Intelligence'},
-    {'number': '43', 'name': 'HTTP Headers', 'script': 'http_headers.py', 'section': 'Security & Threat Intelligence'},
-    {'number': '44', 'name': 'HTTP Security Features', 'script': 'http_security.py', 'section': 'Security & Threat Intelligence'},
-    {'number': '45', 'name': 'Malware & Phishing Check', 'script': 'malware_phishing.py', 'section': 'Security & Threat Intelligence'},
-    {'number': '46', 'name': 'Pastebin Monitoring', 'script': 'pastebin_monitoring.py', 'section': 'Security & Threat Intelligence'},
-    {'number': '47', 'name': 'Privacy & GDPR Compliance', 'script': 'privacy_gdpr.py', 'section': 'Security & Threat Intelligence'},
-    {'number': '48', 'name': 'Security.txt Check', 'script': 'security_txt.py', 'section': 'Security & Threat Intelligence'},
-    {'number': '49', 'name': 'Shodan Reconnaissance', 'script': 'shodan.py', 'section': 'Security & Threat Intelligence'},
-    {'number': '50', 'name': 'SSL Labs Report', 'script': 'ssl_labs_report.py', 'section': 'Security & Threat Intelligence'},
-    {'number': '51', 'name': 'SSL Pinning Check', 'script': 'ssl_pinning_check.py', 'section': 'Security & Threat Intelligence'},
-    {'number': '52', 'name': 'Subdomain Enumeration', 'script': 'subdomain_enum.py', 'section': 'Security & Threat Intelligence'},
-    {'number': '53', 'name': 'Subdomain Takeover', 'script': 'subdomain_takeover.py', 'section': 'Security & Threat Intelligence'},
-    {'number': '54', 'name': 'VirusTotal Scan', 'script': 'virustotal_scan.py', 'section': 'Security & Threat Intelligence'},
+    {'number': '40', 'name': 'Censys Reconnaissance', 'script': 'censys.py', 'section': 'Security & Threat Intelligence'},
+    {'number': '41', 'name': 'Certificate Authority Recon', 'script': 'certificate_authority_recon.py', 'section': 'Security & Threat Intelligence'},
+    {'number': '42', 'name': 'Data Leak Detection', 'script': 'data_leak.py', 'section': 'Security & Threat Intelligence'},
+    {'number': '43', 'name': 'Exposed Environment Files Checker', 'script': 'exposed_env_files.py', 'section': 'Security & Threat Intelligence'},
+    {'number': '44', 'name': 'Firewall Detection', 'script': 'firewall_detection.py', 'section': 'Security & Threat Intelligence'},
+    {'number': '45', 'name': 'Global Ranking', 'script': 'global_ranking.py', 'section': 'Security & Threat Intelligence'},
+    {'number': '46', 'name': 'HTTP Headers', 'script': 'http_headers.py', 'section': 'Security & Threat Intelligence'},
+    {'number': '47', 'name': 'HTTP Security Features', 'script': 'http_security.py', 'section': 'Security & Threat Intelligence'},
+    {'number': '48', 'name': 'Malware & Phishing Check', 'script': 'malware_phishing.py', 'section': 'Security & Threat Intelligence'},
+    {'number': '49', 'name': 'Pastebin Monitoring', 'script': 'pastebin_monitoring.py', 'section': 'Security & Threat Intelligence'},
+    {'number': '50', 'name': 'Privacy & GDPR Compliance', 'script': 'privacy_gdpr.py', 'section': 'Security & Threat Intelligence'},
+    {'number': '51', 'name': 'Security.txt Check', 'script': 'security_txt.py', 'section': 'Security & Threat Intelligence'},
+    {'number': '52', 'name': 'Shodan Reconnaissance', 'script': 'shodan.py', 'section': 'Security & Threat Intelligence'},
+    {'number': '53', 'name': 'SSL Labs Report', 'script': 'ssl_labs_report.py', 'section': 'Security & Threat Intelligence'},
+    {'number': '54', 'name': 'SSL Pinning Check', 'script': 'ssl_pinning_check.py', 'section': 'Security & Threat Intelligence'},
+    {'number': '55', 'name': 'Subdomain Enumeration', 'script': 'subdomain_enum.py', 'section': 'Security & Threat Intelligence'},
+    {'number': '56', 'name': 'Subdomain Takeover', 'script': 'subdomain_takeover.py', 'section': 'Security & Threat Intelligence'},
+    {'number': '57', 'name': 'VirusTotal Scan', 'script': 'virustotal_scan.py', 'section': 'Security & Threat Intelligence'},
 
     {'number': '100', 'name': 'Run All Infrastructure Tools', 'script': '', 'section': 'Run All Scripts'},
     {'number': '200', 'name': 'Run All Web Intelligence Tools', 'script': '', 'section': 'Run All Scripts'},
@@ -135,7 +138,7 @@ Version: [bold green]{VERSION}[/bold green]    Modules: [bold yellow]{number_of_
     """.strip()
     combined_text = f"{colored_ascii_art}\n{description}"
     panel_color = random.choice(colors)
-    console.print(Panel(combined_text, border_style=panel_color, padding=(1, 4)), justify="center")
+    console.print(Panel(combined_text, border_style=panel_color, padding=(1, 4)), justify="left")
 
 def display_table():
     table = Table(box=SIMPLE_HEAVY)
@@ -212,33 +215,39 @@ def execute_script(script_name, target):
 
 
 def run_modules(selected_modules, api_status, mode_name=None):
-    domain = Prompt.ask("[bold yellow]Enter the target domain or URL[/bold yellow]")
-    domain = clean_domain_input(domain)
-    report_data = {}
+    while True:
+        domain = Prompt.ask("[bold yellow]Enter the target domain or URL[/bold yellow]")
+        domain = clean_domain_input(domain)
+        if not domain:
+            console.print("[!] The domain cannot be empty. Please enter a valid domain.", style="bold red")
+            continue
+        
+        report_data = {}
 
-    for mod_number in selected_modules:
-        tool = tools_mapping.get(mod_number)
-        if tool and tool['script']:
-            module_name = tool['name']
-            script_name = tool['script']
-            output = execute_script(script_name, domain)
-            if output:
-                report_data[module_name] = output
-                console.print(output)
+        for mod_number in selected_modules:
+            tool = tools_mapping.get(mod_number)
+            if tool and tool['script']:
+                module_name = tool['name']
+                script_name = tool['script']
+                output = execute_script(script_name, domain)
+                if output:
+                    report_data[module_name] = output
+                    console.print(output)
+            else:
+                console.print(f"[!] Invalid module number: {mod_number}", style="bold red")
+
+        if mode_name:
+            module_names = [mode_name]
+        elif len(selected_modules) == 1:
+            module_names = [tools_mapping[selected_modules[0]]['name']]
         else:
-            console.print(f"[!] Invalid module number: {mod_number}", style="bold red")
+            module_names = ['multiple_modules']
 
-    if mode_name:
-        module_names = [mode_name]
-    elif len(selected_modules) == 1:
-        module_names = [tools_mapping[selected_modules[0]]['name']]
-    else:
-        module_names = ['multiple_modules']
+        generate_report(report_data, domain, module_names)
 
-    generate_report(report_data, domain, module_names)
+        Prompt.ask("\n[bold yellow]Press Enter to continue...[/bold yellow]")
+        main()
 
-    Prompt.ask("\n[bold yellow]Press Enter to continue...[/bold yellow]")
-    main()
 
 import subprocess
 import sys
