@@ -19,6 +19,7 @@
   - cookies.py
   - cms_detection.py
   - performance_monitoring.py
+  - subdomain_enum.py
   - <p>__init__.py</p>
 > Lists config
   - settings.py
