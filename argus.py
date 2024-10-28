@@ -26,11 +26,8 @@ if sys.version_info < (3, 0):
     print("This script requires Python 3.")
     sys.exit(1)
 
-<<<<<<< HEAD
-VERSION = "0.1.1"
-=======
+
 VERSION = "0.1.0"
->>>>>>> origin/main
 AUTHOR1 = "Jason13"
 AUTHOR2 = "HackerTheme"
 
