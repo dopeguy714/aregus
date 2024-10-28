@@ -27,7 +27,7 @@ if sys.version_info < (3, 0):
     sys.exit(1)
 
 
-VERSION = "0.1.0"
+VERSION = "0.1.1"
 AUTHOR1 = "Jason13"
 AUTHOR2 = "HackerTheme"
 
