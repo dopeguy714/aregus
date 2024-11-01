@@ -23,6 +23,11 @@
   - <p>__init__.py</p>
 > Lists config
   - settings.py
+> Update Modules
+ - waf_detection_nist.py
+ - network_design_checker.py
+ - server_misconfiguration.py
+ - backup_file_scanner.py
 > Credit By https://github.com/jasonxtn/Argus
 <h1 align="center">
   <a href="">
