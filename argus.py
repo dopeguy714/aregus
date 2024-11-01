@@ -26,14 +26,13 @@ if sys.version_info < (3, 0):
     print("This script requires Python 3.")
     sys.exit(1)
 
-
 VERSION = "0.1.1"
 AUTHOR1 = "Jason13"
 AUTHOR2 = "HackerTheme"
 
 # Define tools with updated module numbers
 tools = [
-    # Network & Infrastructure (1-19)
+    # Network & Infrastructure 
     {'number': '1', 'name': 'Associated Hosts', 'script': 'associated_hosts.py', 'section': 'Network & Infrastructure'},
     {'number': '2', 'name': 'DNS Over HTTPS', 'script': 'dns_over_https.py', 'section': 'Network & Infrastructure'},
     {'number': '3', 'name': 'DNS Records', 'script': 'dns_records.py', 'section': 'Network & Infrastructure'},
@@ -55,7 +54,7 @@ tools = [
     {'number': '19', 'name': 'Zone Transfer', 'script': 'zonetransfer.py', 'section': 'Network & Infrastructure'},
     {'number': '20', 'name': 'Network Design Checker', 'script': 'network_design_checker.py', 'section': 'Network & Infrastructure'},
     
-    # Web Application Analysis (20-36)
+    # Web Application Analysis 
     {'number': '21', 'name': 'Archive History', 'script': 'archive_history.py', 'section': 'Web Application Analysis'},
     {'number': '21', 'name': 'Broken Links Detection', 'script': 'broken_links.py', 'section': 'Web Application Analysis'},
     {'number': '22', 'name': 'Carbon Footprint', 'script': 'carbon_footprint.py', 'section': 'Web Application Analysis'},
@@ -76,7 +75,7 @@ tools = [
     {'number': '37', 'name': 'WAF Detection NIST', 'script': 'waf_detection_nist.py', 'section': 'Web Application Analysis'},
     {'number': '38', 'name': 'Server Misconfiguration Checker', 'script': 'server_misconfiguration.py', 'section': 'Web Application Analysis'},
     {'number': '39', 'name': 'Backup File Scanner', 'script': 'backup_file_scanner.py', 'section': 'Web Application Analysis'},
-    # Security & Threat Intelligence (37-54)
+    # Security & Threat Intelligence 
     {'number': '40', 'name': 'Censys Reconnaissance', 'script': 'censys.py', 'section': 'Security & Threat Intelligence'},
     {'number': '41', 'name': 'Certificate Authority Recon', 'script': 'certificate_authority_recon.py', 'section': 'Security & Threat Intelligence'},
     {'number': '42', 'name': 'Data Leak Detection', 'script': 'data_leak.py', 'section': 'Security & Threat Intelligence'},
