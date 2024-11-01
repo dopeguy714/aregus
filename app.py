@@ -103,4 +103,4 @@ def run_tool():
     return render_template('result.html', output=output)
 
 if __name__ == '__main__':
-    app.run(host='argus-services.hopto.org', port=9001)
+    app.run(host='YOUR IP ADDR', port=9001)
