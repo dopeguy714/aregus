@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Argus - Web Application</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        /* Background gradient */
+        body {
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+        /* Container styling */
+        .container {
+            background-color: #ffffff;
+            padding: 40px; /* Increased padding for better balance */
+            border-radius: 10px;
+            box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+            max-width: 500px;
+            text-align: center;
+        }
+        /* Description text styling */
+        .description {
+            margin-bottom: 20px;
+            font-weight: 500;
+            color: #555;
+        }
+        h2 {
+            color: #333;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+        /* Form field styling */
+        .form-control, .btn-primary {
+            border-radius: 8px;
+        }
+        .form-control {
+            box-shadow: inset 0px 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        /* Button styling */
+        .btn-primary {
+            background-color: #007bff;
+            border: none;
+            transition: all 0.3s ease;
+            box-shadow: 0px 4px 8px rgba(0, 123, 255, 0.4);
+        }
+        .btn-primary:hover {
+            background-color: #0056b3;
+            box-shadow: 0px 6px 12px rgba(0, 123, 255, 0.6);
+        }
+        /* Link styling */
+        .link {
+            color: #007bff;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <p class="description">Argus Beta version - Web Application is the ultimate Information Gathering Toolkit Development Version By HackerTheme</p>
+        <h2>Argus - Web Application</h2>
+        <form action="{{ url_for('run_tool') }}" method="POST">
+            <div class="form-group">
+                <label for="tool">Select a tool</label>
+                <select class="form-control" id="tool" name="tool" required>
+                    {% for tool in tools %}
+                        <option value="{{ tool.number }}">{{ tool.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="domain">Enter IP Address URL or Domain</label>
+                <input type="text" class="form-control" id="domain" name="domain" placeholder="Enter domain" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Run Tool</button>
+            <p class="description mt-3">If you want to use the CLI Version, You can go to <a href="https://github.com/ThemeHackers/argus/" class="link" target="_blank">This Link</a>.</p>
+        </form>
+    </div>
+</body>
+</html>
