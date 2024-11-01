@@ -74,6 +74,7 @@ if __name__ == "__main__":
     if len(sys.argv) > 1:
         target = sys.argv[1]
         main(target)
+
     else:
         console.print("[red][!] No target provided. Please pass a domain, URL, or IP address.[/red]")
         sys.exit(1)
