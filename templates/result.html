@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Result</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        /* Background gradient */
+        body {
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+        /* Container styling */
+        .container {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+            max-width: 1300px;  /* Adjusted width for better output display */
+            text-align: center;
+        }
+        h2 {
+            color: #333;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+        /* Output area styling */
+        .output {
+            background-color: #f8f9fa;  /* Light background for the output */
+            border: 1px solid #dee2e6;  /* Border for better separation */
+            border-radius: 8px;
+            box-shadow: inset 0px 2px 4px rgba(0, 0, 0, 0.1);
+            overflow-x: auto;  /* Enables horizontal scrolling for long output */
+            max-height: 350px;  /* Limits the height of the output area */
+        }
+        pre {
+            margin: 0;  /* Removes default margins */
+            white-space: pre-wrap;  /* Ensures long lines wrap */
+            word-wrap: break-word;  /* Allows breaking long words */
+        }
+        /* Button styling */
+        .btn-secondary {
+            transition: all 0.3s ease;
+            box-shadow: 0px 4px 8px rgba(108, 117, 125, 0.4);
+        }
+        .btn-secondary:hover {
+            background-color: #6c757d;
+            box-shadow: 0px 6px 12px rgba(108, 117, 125, 0.6);
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <h2>Tool Output</h2>
+        <div class="output bg-light p-3 rounded">
+            <pre>{{ output }}</pre>
+        </div>
+        <a href="{{ url_for('index') }}" class="btn btn-secondary mt-3">Back to Tool Selection</a>
+    </div>
+</body>
+</html>
