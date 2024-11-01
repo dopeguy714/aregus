@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Error</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        /* Background gradient */
+        body {
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+        /* Container styling */
+        .container {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+            max-width: 600px;
+            text-align: center;
+        }
+        h2 {
+            color: #dc3545;  /* Red color for the error heading */
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+        /* Alert box styling */
+        .alert {
+            background-color: #f8d7da;  /* Light red background for the alert */
+            border-color: #f5c6cb;      /* Darker red border for distinction */
+            color: #721c24;              /* Dark red text for readability */
+            border-radius: 8px;          /* Rounded corners */
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); /* Shadow for depth */
+        }
+        /* Button styling */
+        .btn-secondary {
+            transition: all 0.3s ease;
+            box-shadow: 0px 4px 8px rgba(108, 117, 125, 0.4);
+        }
+        .btn-secondary:hover {
+            background-color: #6c757d;
+            box-shadow: 0px 6px 12px rgba(108, 117, 125, 0.6);
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <h2>Error</h2>
+        <div class="alert alert-danger">
+            {{ error_message }}
+        </div>
+        <a href="{{ url_for('index') }}" class="btn btn-secondary mt-3">Back to Tool Selection</a>
+    </div>
+</body>
+</html>
