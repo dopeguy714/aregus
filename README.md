@@ -28,6 +28,9 @@
  - network_design_checker.py
  - server_misconfiguration.py
  - backup_file_scanner.py
+> Added web-based management, which is a beta version.
+ - app.py
+ - templates
 > Credit By https://github.com/jasonxtn/Argus
 <h1 align="center">
   <a href="">
