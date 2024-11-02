@@ -11,3 +11,4 @@ pyOpenSSL
 python-nmap
 aioquic
 blessings
+flask
